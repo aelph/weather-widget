@@ -439,3 +439,21 @@ msgstr "Определение местоположения по IP-адресу
 
 msgid "The location is requested from ipwho.is (geojs.io as a fallback), which sees your IP address. With a VPN this is the location of the VPN exit. When the detection is off, the name and coordinates below are used."
 msgstr "Место запрашивается у ipwho.is (запасной сервис – geojs.io), который видит ваш IP-адрес. При работе через VPN это будет место выхода VPN. Если определение отключено, действуют название и координаты ниже."
+
+msgid "Searching…"
+msgstr "Поиск…"
+
+msgid "Nothing found"
+msgstr "Ничего не найдено"
+
+msgid "Open-Meteo did not respond"
+msgstr "Open-Meteo не ответил"
+
+msgid "Find a place:"
+msgstr "Найти место:"
+
+msgid "City name"
+msgstr "Название города"
+
+msgid "Search"
+msgstr "Найти"

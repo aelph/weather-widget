@@ -53,6 +53,69 @@ KCM.SimpleKCM {
         validator: DoubleValidator { bottom: 0.1; top: 20; decimals: 1; notation: DoubleValidator.StandardNotation }
     }
 
+    // Поиск места по названию через геокодер Open-Meteo; выбранный результат заполняет поля названия и координат
+    property var searchResults: []
+    property string searchStatus: ""
+    property var searchRequest: null
+
+    function searchPlace(name) {
+        const query = name.trim()
+        if (query === "") return
+        if (searchRequest) searchRequest.abort()
+        const xhr = new XMLHttpRequest()
+        searchRequest = xhr
+        searchResults = []
+        searchStatus = i18n("Searching…")
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState !== XMLHttpRequest.DONE || searchRequest !== xhr) return
+            searchTimeout.stop()
+            searchRequest = null
+            if (xhr.status !== 200) {
+                searchStatus = xhr.status === 0 ? i18n("No connection to Open-Meteo") : i18n("Open-Meteo returned status %1", String(xhr.status))
+                return
+            }
+            let found = []
+            try {
+                found = JSON.parse(xhr.responseText).results || []
+            } catch (e) {
+                searchStatus = i18n("Could not parse the Open-Meteo response: %1", e.message)
+                return
+            }
+            searchStatus = found.length === 0 ? i18n("Nothing found") : ""
+            searchResults = found
+            if (found.length > 0) {
+                resultsCombo.currentIndex = 0
+                applyPlace(0)
+            }
+        }
+        xhr.open("GET", "https://geocoding-api.open-meteo.com/v1/search?count=10&format=json&language=" + Qt.locale().name.substring(0, 2) + "&name=" + encodeURIComponent(query))
+        xhr.send()
+        searchTimeout.restart()
+    }
+
+    function applyPlace(index) {
+        const place = searchResults[index]
+        if (!place) return
+        cityField.text = place.name
+        latField.text = place.latitude.toFixed(4)
+        lonField.text = place.longitude.toFixed(4)
+    }
+
+    // Название с областью и страной, чтобы различать одноимённые места
+    function placeLabel(place) {
+        return [place.name, place.admin1, place.country].filter((part, i, all) => part && all.indexOf(part) === i).join(", ")
+    }
+
+    Timer {
+        id: searchTimeout
+        interval: 15000
+        onTriggered: {
+            if (searchRequest) searchRequest.abort()
+            searchRequest = null
+            searchStatus = i18n("Open-Meteo did not respond")
+        }
+    }
+
     // Список с выбором единицы: в настройках хранится код (value), а не номер строки
     component UnitCombo: QQC2.ComboBox {
         property string value
@@ -80,6 +143,41 @@ KCM.SimpleKCM {
             wrapMode: Text.WordWrap
             opacity: 0.7
             Layout.fillWidth: true
+            Layout.maximumWidth: Kirigami.Units.gridUnit * 24
+        }
+
+        RowLayout {
+            Kirigami.FormData.label: i18n("Find a place:")
+            enabled: !autoCheck.checked
+            spacing: Kirigami.Units.smallSpacing
+
+            QQC2.TextField {
+                id: searchField
+                placeholderText: i18n("City name")
+                onAccepted: searchPlace(text)
+            }
+
+            QQC2.Button {
+                icon.name: "edit-find"
+                text: i18n("Search")
+                enabled: searchField.text.trim() !== ""
+                onClicked: searchPlace(searchField.text)
+            }
+        }
+
+        QQC2.ComboBox {
+            id: resultsCombo
+            visible: searchResults.length > 0
+            enabled: !autoCheck.checked
+            model: searchResults.map(placeLabel)
+            implicitContentWidthPolicy: QQC2.ComboBox.WidestText
+            onActivated: index => applyPlace(index)
+        }
+
+        QQC2.Label {
+            visible: searchStatus !== ""
+            text: searchStatus
+            opacity: 0.7
         }
 
         QQC2.TextField {
@@ -109,6 +207,7 @@ KCM.SimpleKCM {
             wrapMode: Text.WordWrap
             opacity: 0.7
             Layout.fillWidth: true
+            Layout.maximumWidth: Kirigami.Units.gridUnit * 24
         }
 
         QQC2.SpinBox {
@@ -223,6 +322,7 @@ KCM.SimpleKCM {
             wrapMode: Text.WordWrap
             opacity: 0.7
             Layout.fillWidth: true
+            Layout.maximumWidth: Kirigami.Units.gridUnit * 24
         }
     }
 }
