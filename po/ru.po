@@ -357,3 +357,67 @@ msgstr "дюймы"
 
 msgid "Location"
 msgstr "Место"
+
+msgctxt "trend of temperature, humidity or pressure"
+msgid "rising"
+msgstr "повышается"
+
+msgctxt "trend of temperature, humidity or pressure"
+msgid "falling"
+msgstr "понижается"
+
+msgctxt "trend of wind speed"
+msgid "strengthening"
+msgstr "усиливается"
+
+msgctxt "trend of wind speed"
+msgid "easing"
+msgstr "стихает"
+
+msgctxt "trend of wind gusts"
+msgid "strengthening"
+msgstr "усиливаются"
+
+msgctxt "trend of wind gusts"
+msgid "easing"
+msgstr "стихают"
+
+msgctxt "trend: no noticeable change"
+msgid "steady"
+msgstr "без изменений"
+
+msgid "Trends"
+msgstr "Тенденции"
+
+msgid "Compare with the forecast in, h:"
+msgstr "Сравнивать с прогнозом через, ч:"
+
+msgid "Temperature threshold, °C:"
+msgstr "Порог температуры, °C:"
+
+msgid "Humidity threshold, %:"
+msgstr "Порог влажности, %:"
+
+msgid "Wind threshold, m/s:"
+msgstr "Порог ветра, м/с:"
+
+msgid "Gusts threshold, m/s:"
+msgstr "Порог порывов, м/с:"
+
+msgid "Pressure threshold, hPa:"
+msgstr "Порог давления, гПа:"
+
+msgid "A change smaller than the threshold is shown as “steady”. Thresholds are always set in °C, m/s and hPa, whatever display units are chosen."
+msgstr "Изменение меньше порога показывается как «без изменений». Пороги всегда задаются в °C, м/с и гПа, какие бы единицы отображения ни были выбраны."
+
+msgctxt "change of day length by tomorrow"
+msgid "day lengthening by %1 min"
+msgstr "день прибывает на %1 мин"
+
+msgctxt "change of day length by tomorrow"
+msgid "day shortening by %1 min"
+msgstr "день убывает на %1 мин"
+
+msgctxt "change of day length by tomorrow"
+msgid "day length steady"
+msgstr "долгота дня без изменений"

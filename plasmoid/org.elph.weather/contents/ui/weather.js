@@ -103,14 +103,52 @@ function url(latitude, longitude) {
     return "https://api.open-meteo.com/v1/forecast?latitude=" + latitude + "&longitude=" + longitude
         + "&timezone=auto&wind_speed_unit=ms&forecast_days=7&forecast_hours=24"
         + "&current=temperature_2m,apparent_temperature,relative_humidity_2m,weather_code,is_day,wind_speed_10m,wind_direction_10m,wind_gusts_10m,surface_pressure"
-        + "&hourly=temperature_2m,weather_code,is_day,precipitation_probability"
-        + "&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_probability_max,sunrise,sunset"
+        + "&hourly=temperature_2m,weather_code,is_day,precipitation_probability,apparent_temperature,relative_humidity_2m,wind_speed_10m,wind_gusts_10m,surface_pressure"
+        + "&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_probability_max,sunrise,sunset,daylight_duration"
+}
+
+// Тенденция показателя: прогноз через hours часов сравнивается с текущим значением.
+// Изменение меньше порога считается отсутствием изменений. Значения и пороги – в единицах сервиса (°C, %, м/с, гПа).
+// Возвращает 1, -1, 0 или null, если прогноза на нужный час нет.
+function trend(now, series, hours, threshold) {
+    if (!series || series.length <= hours || series[hours] === null || series[hours] === undefined) return null
+    const delta = series[hours] - now
+    return delta >= threshold ? 1 : delta <= -threshold ? -1 : 0
+}
+
+function steadyText(t) {
+    return t === null ? "" : i18nc("trend: no noticeable change", "steady")
+}
+
+function riseText(t) {
+    return t > 0 ? i18nc("trend of temperature, humidity or pressure", "rising") : t < 0 ? i18nc("trend of temperature, humidity or pressure", "falling") : steadyText(t)
+}
+
+function windText(t) {
+    return t > 0 ? i18nc("trend of wind speed", "strengthening") : t < 0 ? i18nc("trend of wind speed", "easing") : steadyText(t)
+}
+
+function gustsText(t) {
+    return t > 0 ? i18nc("trend of wind gusts", "strengthening") : t < 0 ? i18nc("trend of wind gusts", "easing") : steadyText(t)
 }
 
 // Приводит ответ Open-Meteo к виду, удобному для вёрстки. Бросает исключение, если ответ неполон.
 // units – выбранные единицы: { temp: "c"|"f", wind: "ms"|"kmh"|"mph"|"kn", pressure: "mmhg"|"hpa"|"inhg", precip: "mm"|"inch" }
-function parse(text, units) {
+// Тенденция долготы дня: завтрашняя продолжительность светового дня сравнивается с сегодняшней (в секундах).
+// Разница меньше полуминуты, как около солнцестояний, считается отсутствием изменений.
+function daylightText(durations) {
+    if (!durations || durations.length < 2 || durations[0] === null || durations[1] === null) return ""
+    const delta = durations[1] - durations[0]
+    const minutes = String(Math.round(Math.abs(delta) / 60))
+    if (delta >= 30) return i18nc("change of day length by tomorrow", "day lengthening by %1 min", minutes)
+    if (delta <= -30) return i18nc("change of day length by tomorrow", "day shortening by %1 min", minutes)
+    return i18nc("change of day length by tomorrow", "day length steady")
+}
+
+// trends – срок и пороги тенденций: { hours, temp, humidity, wind, gusts, pressure }
+function parse(text, units, trends) {
     const u = units || {}
+    const t = trends || { hours: 1, temp: 0.5, humidity: 3, wind: 0.5, gusts: 1, pressure: 0.5 }
     const j = JSON.parse(text)
     if (j.error) throw new Error(j.reason || i18n("service error"))
     const c = j.current, h = j.hourly, d = j.daily
@@ -151,6 +189,13 @@ function parse(text, units) {
         gusts: speed(c.wind_gusts_10m, u.wind),
         // Давление на уровне места, а не приведённое к уровню моря
         pressure: pressure(c.surface_pressure, u.pressure),
+        tempTrend: riseText(trend(c.temperature_2m, h.temperature_2m, t.hours, t.temp)),
+        feelsTrend: riseText(trend(c.apparent_temperature, h.apparent_temperature, t.hours, t.temp)),
+        humidityTrend: riseText(trend(c.relative_humidity_2m, h.relative_humidity_2m, t.hours, t.humidity)),
+        windTrend: windText(trend(c.wind_speed_10m, h.wind_speed_10m, t.hours, t.wind)),
+        gustsTrend: gustsText(trend(c.wind_gusts_10m, h.wind_gusts_10m, t.hours, t.gusts)),
+        pressureTrend: riseText(trend(c.surface_pressure, h.surface_pressure, t.hours, t.pressure)),
+        sunTrend: daylightText(d.daylight_duration),
         sunrise: clock(d.sunrise[0]),
         sunset: clock(d.sunset[0]),
         hourly: hourly,

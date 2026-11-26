@@ -21,6 +21,15 @@ PlasmoidItem {
         pressure: Plasmoid.configuration.pressureUnit,
         precip: Plasmoid.configuration.precipUnit
     })
+    // Срок и пороги тенденций; в настройках пороги хранятся в десятых долях, кроме влажности
+    readonly property var trends: ({
+        hours: Math.max(1, Math.min(12, Plasmoid.configuration.trendHours)),
+        temp: Plasmoid.configuration.trendTemp / 10,
+        humidity: Plasmoid.configuration.trendHumidity,
+        wind: Plasmoid.configuration.trendWind / 10,
+        gusts: Plasmoid.configuration.trendGusts / 10,
+        pressure: Plasmoid.configuration.trendPressure / 10
+    })
     property string rawText: ""
 
     readonly property bool showHourly: Plasmoid.configuration.showHourly
@@ -28,10 +37,14 @@ PlasmoidItem {
     // Без обоих прогнозов окно сужается до текущей погоды, а показатели уходят под температуру
     readonly property bool narrow: !showHourly && !showDaily
 
-    onUnitsChanged: {
+    onUnitsChanged: reparse()
+    onTrendsChanged: reparse()
+
+    // Смена единиц или настроек тенденций: последний ответ сервиса разбирается заново, без нового запроса
+    function reparse() {
         if (rawText === "") return
         try {
-            weather = Weather.parse(rawText, units)
+            weather = Weather.parse(rawText, units, trends)
         } catch (e) {
             errorText = i18n("Could not parse the Open-Meteo response: %1", e.message)
         }
@@ -75,7 +88,7 @@ PlasmoidItem {
                 return
             }
             try {
-                weather = Weather.parse(xhr.responseText, root.units)
+                weather = Weather.parse(xhr.responseText, root.units, root.trends)
                 rawText = xhr.responseText
                 fetchedAt = Date.now()
                 stale = false
@@ -228,10 +241,23 @@ PlasmoidItem {
                     ColumnLayout {
                         spacing: 0
 
-                        PC3.Label {
-                            text: root.weather ? root.weather.temp : ""
-                            font.pointSize: Kirigami.Theme.defaultFont.pointSize * 2.6
-                            font.weight: Font.Light
+                        RowLayout {
+                            spacing: Kirigami.Units.smallSpacing
+
+                            PC3.Label {
+                                text: root.weather ? root.weather.temp : ""
+                                font.pointSize: Kirigami.Theme.defaultFont.pointSize * 2.6
+                                font.weight: Font.Light
+                                Layout.alignment: Qt.AlignBaseline
+                            }
+
+                            // Тенденция температуры; тем же цветом, что осадки в прогнозах
+                            PC3.Label {
+                                visible: text !== ""
+                                text: root.weather ? root.weather.tempTrend : ""
+                                color: Kirigami.Theme.linkColor
+                                Layout.alignment: Qt.AlignBaseline
+                            }
                         }
 
                         PC3.Label {
@@ -252,23 +278,37 @@ PlasmoidItem {
 
                     Repeater {
                         model: root.weather ? [
-                            [i18n("Feels like"), root.weather.feels], [i18n("Humidity"), root.weather.humidity],
-                            [i18n("Wind"), root.weather.wind], [i18n("Pressure"), root.weather.pressure],
-                            [i18n("Gusts"), root.weather.gusts], [i18n("Sun"), root.weather.sunrise + " – " + root.weather.sunset]
+                            [i18n("Feels like"), root.weather.feels, root.weather.feelsTrend], [i18n("Humidity"), root.weather.humidity, root.weather.humidityTrend],
+                            [i18n("Wind"), root.weather.wind, root.weather.windTrend], [i18n("Pressure"), root.weather.pressure, root.weather.pressureTrend],
+                            [i18n("Gusts"), root.weather.gusts, root.weather.gustsTrend], [i18n("Sun"), root.weather.sunrise + " – " + root.weather.sunset, root.weather.sunTrend]
                         ] : []
 
-                        RowLayout {
+                        // Показатель и под ним его тенденция; у «Солнца» это изменение долготы дня к завтрашнему дню
+                        ColumnLayout {
+                            id: detail
                             required property var modelData
                             Layout.columnSpan: 2
-                            spacing: Kirigami.Units.smallSpacing
+                            Layout.alignment: Qt.AlignTop
+                            spacing: 0
 
-                            PC3.Label {
-                                text: parent.modelData[0]
-                                opacity: 0.6
+                            RowLayout {
+                                spacing: Kirigami.Units.smallSpacing
+
+                                PC3.Label {
+                                    text: detail.modelData[0]
+                                    opacity: 0.6
+                                }
+
+                                PC3.Label {
+                                    text: detail.modelData[1]
+                                }
                             }
 
                             PC3.Label {
-                                text: parent.modelData[1]
+                                visible: text !== ""
+                                text: detail.modelData[2]
+                                color: Kirigami.Theme.linkColor
+                                font: Kirigami.Theme.smallFont
                             }
                         }
                     }

@@ -13,7 +13,7 @@ The stock Plasma weather widget takes its data from a handful of national weathe
 ## What it shows
 
 - **Panel:** weather icon and temperature. The width is fixed by the layout, so the widget does not overlap its neighbours.
-- **Current conditions:** temperature, description, feels-like, wind direction and speed, gusts, humidity, pressure (at station level, not reduced to sea level), sunrise and sunset.
+- **Current conditions:** temperature, description, feels-like, wind direction and speed, gusts, humidity, pressure (at station level, not reduced to sea level), sunrise and sunset. A trend word in blue is shown next to the temperature and below feels-like, humidity, wind, gusts and pressure: "rising"/"falling" (for wind "strengthening"/"easing") or "steady". The forecast one hour ahead is compared with the current value; a change below the threshold counts as "steady". The horizon and the thresholds are configurable. Below sunrise and sunset the change of day length by tomorrow is shown ("day shortening by 2 min").
 - **Next 24 hours:** two rows of 12 hours with icon, temperature and precipitation probability.
 - **7 days:** description, precipitation probability and amount, minimum and maximum temperature.
 
@@ -28,7 +28,7 @@ The interface follows the system language: English by default, Russian when Plas
 
 ## Settings
 
-Place name, latitude, longitude (decimal degrees) and the update interval in minutes (15 by default). Units are chosen separately for temperature (°C, °F), wind speed (m/s, km/h, mph, knots), pressure (mmHg, hPa, inHg) and precipitation (mm, inches); changing them does not trigger a new request, the last response is converted on the spot. Two checkboxes, both on by default, show or hide the 24-hour and the 7-day forecast; with both off the popup shrinks to current conditions only, and the details move below the temperature. There is no search by city name: coordinates are entered by hand.
+Place name, latitude, longitude (decimal degrees) and the update interval in minutes (15 by default). Units are chosen separately for temperature (°C, °F), wind speed (m/s, km/h, mph, knots), pressure (mmHg, hPa, inHg) and precipitation (mm, inches); changing them does not trigger a new request, the last response is converted on the spot. Two checkboxes, both on by default, show or hide the 24-hour and the 7-day forecast; with both off the popup shrinks to current conditions only, and the details move below the temperature. The "Trends" section sets how many hours ahead the forecast is compared with the current value (1 by default, up to 12) and the thresholds: temperature 0.5 °C, humidity 3 %, wind 0.5 m/s, gusts 1 m/s, pressure 0.5 hPa by default. Thresholds are always in these units, whatever display units are chosen. There is no search by city name: coordinates are entered by hand.
 
 ## Installation
 

@@ -32,5 +32,24 @@
         <entry name="showDaily" type="Bool">
             <default>true</default>
         </entry>
+        <!-- Тенденции: срок сравнения в часах и пороги. Пороги температуры, ветра, порывов и давления хранятся в десятых долях (5 = 0,5), влажности – в процентах -->
+        <entry name="trendHours" type="Int">
+            <default>1</default>
+        </entry>
+        <entry name="trendTemp" type="Int">
+            <default>5</default>
+        </entry>
+        <entry name="trendHumidity" type="Int">
+            <default>3</default>
+        </entry>
+        <entry name="trendWind" type="Int">
+            <default>5</default>
+        </entry>
+        <entry name="trendGusts" type="Int">
+            <default>10</default>
+        </entry>
+        <entry name="trendPressure" type="Int">
+            <default>5</default>
+        </entry>
     </group>
 </kcfg>

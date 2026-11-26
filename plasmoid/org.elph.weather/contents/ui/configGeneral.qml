@@ -15,6 +15,12 @@ KCM.SimpleKCM {
     property alias cfg_precipUnit: precipCombo.value
     property alias cfg_showHourly: hourlyCheck.checked
     property alias cfg_showDaily: dailyCheck.checked
+    property alias cfg_trendHours: trendHoursSpin.value
+    property alias cfg_trendTemp: trendTempSpin.value
+    property alias cfg_trendHumidity: trendHumiditySpin.value
+    property alias cfg_trendWind: trendWindSpin.value
+    property alias cfg_trendGusts: trendGustsSpin.value
+    property alias cfg_trendPressure: trendPressureSpin.value
 
     // Plasma передаёт странице и значения по умолчанию; без этих свойств журнал засоряется предупреждениями
     property string cfg_cityNameDefault
@@ -27,6 +33,23 @@ KCM.SimpleKCM {
     property string cfg_precipUnitDefault
     property bool cfg_showHourlyDefault
     property bool cfg_showDailyDefault
+    property int cfg_trendHoursDefault
+    property int cfg_trendTempDefault
+    property int cfg_trendHumidityDefault
+    property int cfg_trendWindDefault
+    property int cfg_trendGustsDefault
+    property int cfg_trendPressureDefault
+
+    // Поле для порога с одним знаком после запятой: значение хранится в десятых долях (5 = 0,5)
+    component TenthsSpin: QQC2.SpinBox {
+        from: 1
+        to: 200
+        stepSize: 1
+        editable: true
+        textFromValue: (value, locale) => (value / 10).toLocaleString(locale, "f", 1)
+        valueFromText: (text, locale) => Math.round(Number.fromLocaleString(locale, text) * 10)
+        validator: DoubleValidator { bottom: 0.1; top: 20; decimals: 1; notation: DoubleValidator.StandardNotation }
+    }
 
     // Список с выбором единицы: в настройках хранится код (value), а не номер строки
     component UnitCombo: QQC2.ComboBox {
@@ -136,6 +159,52 @@ KCM.SimpleKCM {
                 { text: i18n("millimetres, mm"), value: "mm" },
                 { text: i18n("inches"), value: "inch" }
             ]
+        }
+
+        Item {
+            Kirigami.FormData.isSection: true
+            Kirigami.FormData.label: i18n("Trends")
+        }
+
+        QQC2.SpinBox {
+            id: trendHoursSpin
+            Kirigami.FormData.label: i18n("Compare with the forecast in, h:")
+            from: 1
+            to: 12
+        }
+
+        TenthsSpin {
+            id: trendTempSpin
+            Kirigami.FormData.label: i18n("Temperature threshold, °C:")
+        }
+
+        QQC2.SpinBox {
+            id: trendHumiditySpin
+            Kirigami.FormData.label: i18n("Humidity threshold, %:")
+            from: 1
+            to: 50
+        }
+
+        TenthsSpin {
+            id: trendWindSpin
+            Kirigami.FormData.label: i18n("Wind threshold, m/s:")
+        }
+
+        TenthsSpin {
+            id: trendGustsSpin
+            Kirigami.FormData.label: i18n("Gusts threshold, m/s:")
+        }
+
+        TenthsSpin {
+            id: trendPressureSpin
+            Kirigami.FormData.label: i18n("Pressure threshold, hPa:")
+        }
+
+        QQC2.Label {
+            text: i18n("A change smaller than the threshold is shown as “steady”. Thresholds are always set in °C, m/s and hPa, whatever display units are chosen.")
+            wrapMode: Text.WordWrap
+            opacity: 0.7
+            Layout.fillWidth: true
         }
     }
 }
