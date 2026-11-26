@@ -62,3 +62,7 @@ Requires KDE Plasma 6; tested on Plasma 6.8. Rebuilding the translation needs ge
 Weather data by [Open-Meteo](https://open-meteo.com), licensed under CC BY 4.0. The free API is intended for non-commercial use.
 
 The widget talks only to the services named here. Open-Meteo receives the coordinates of the place. With detection by IP address on, [ipwho.is](https://ipwho.is) or, as a fallback, [geojs.io](https://www.geojs.io) sees your IP address, and the Open-Meteo geocoder receives the name of the detected place. With detection off, only the forecast request is made.
+
+## License
+
+[MIT](LICENSE). The weather data has its own licence, see above.
