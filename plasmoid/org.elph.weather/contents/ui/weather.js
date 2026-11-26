@@ -44,15 +44,37 @@ function icon(code, isDay) {
     return isDay ? CODES[code][1] : CODES[code][2]
 }
 
+// Сервис всегда запрашивается в одних и тех же единицах (°C, м/с, гПа, мм); пересчёт в выбранные делается здесь, поэтому смена единиц не требует нового запроса.
 // Знак минуса – типографский, ноль без знака
-function temp(value) {
-    const r = Math.round(value)
+function temp(value, unit) {
+    const r = Math.round(unit === "f" ? value * 9 / 5 + 32 : value)
     if (r === 0) return "0°"
     return (r < 0 ? "−" + (-r) : r) + "°"
 }
 
-function decimal(value) {
-    return value.toFixed(1).replace(".", ",")
+function decimal(value, digits) {
+    return value.toFixed(digits === undefined ? 1 : digits).replace(".", ",")
+}
+
+// Скорость ветра из м/с
+function speed(value, unit) {
+    if (unit === "kmh") return Math.round(value * 3.6) + " км/ч"
+    if (unit === "mph") return Math.round(value * 2.236936) + " миль/ч"
+    if (unit === "kn") return Math.round(value * 1.943844) + " уз"
+    return decimal(value) + " м/с"
+}
+
+// Давление из гПа
+function pressure(value, unit) {
+    if (unit === "hpa") return Math.round(value) + " гПа"
+    if (unit === "inhg") return decimal(value * 0.0295300, 2) + " дюйм. рт. ст."
+    return Math.round(value * 0.750062) + " мм рт. ст."
+}
+
+// Количество осадков из мм
+function precipitation(value, unit) {
+    if (unit === "inch") return decimal(value / 25.4, 2) + " дюйм."
+    return decimal(value) + " мм"
 }
 
 // Направление, откуда дует ветер
@@ -85,7 +107,9 @@ function url(latitude, longitude) {
 }
 
 // Приводит ответ Open-Meteo к виду, удобному для вёрстки. Бросает исключение, если ответ неполон.
-function parse(text) {
+// units – выбранные единицы: { temp: "c"|"f", wind: "ms"|"kmh"|"mph"|"kn", pressure: "mmhg"|"hpa"|"inhg", precip: "mm"|"inch" }
+function parse(text, units) {
+    const u = units || {}
     const j = JSON.parse(text)
     if (j.error) throw new Error(j.reason || "ошибка сервиса")
     const c = j.current, h = j.hourly, d = j.daily
@@ -94,7 +118,7 @@ function parse(text) {
     for (let i = 0; i < h.time.length; i++) {
         hourly.push({
             hour: hour(h.time[i]),
-            temp: temp(h.temperature_2m[i]),
+            temp: temp(h.temperature_2m[i], u.temp),
             icon: icon(h.weather_code[i], h.is_day[i] === 1),
             text: describe(h.weather_code[i]),
             precip: h.precipitation_probability[i]
@@ -107,24 +131,25 @@ function parse(text) {
             label: dayLabel(d.time[i], i),
             icon: icon(d.weather_code[i], true),
             text: describe(d.weather_code[i]),
-            tempMax: temp(d.temperature_2m_max[i]),
-            tempMin: temp(d.temperature_2m_min[i]),
+            tempMax: temp(d.temperature_2m_max[i], u.temp),
+            tempMin: temp(d.temperature_2m_min[i], u.temp),
             precipProb: d.precipitation_probability_max[i],
-            precipSum: d.precipitation_sum[i]
+            precipSum: d.precipitation_sum[i],
+            precipText: precipitation(d.precipitation_sum[i], u.precip)
         })
     }
 
     return {
         time: clock(c.time),
-        temp: temp(c.temperature_2m),
-        feels: temp(c.apparent_temperature),
+        temp: temp(c.temperature_2m, u.temp),
+        feels: temp(c.apparent_temperature, u.temp),
         icon: icon(c.weather_code, c.is_day === 1),
         text: describe(c.weather_code),
         humidity: Math.round(c.relative_humidity_2m) + " %",
-        wind: windDir(c.wind_direction_10m) + " " + decimal(c.wind_speed_10m) + " м/с",
-        gusts: decimal(c.wind_gusts_10m) + " м/с",
-        // Давление на уровне места, а не приведённое к уровню моря: 1 гПа = 0,750062 мм рт. ст.
-        pressure: Math.round(c.surface_pressure * 0.750062) + " мм рт. ст.",
+        wind: windDir(c.wind_direction_10m) + " " + speed(c.wind_speed_10m, u.wind),
+        gusts: speed(c.wind_gusts_10m, u.wind),
+        // Давление на уровне места, а не приведённое к уровню моря
+        pressure: pressure(c.surface_pressure, u.pressure),
         sunrise: clock(d.sunrise[0]),
         sunset: clock(d.sunset[0]),
         hourly: hourly,

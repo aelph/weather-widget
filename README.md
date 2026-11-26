@@ -13,11 +13,11 @@ The stock Plasma weather widget takes its data from a handful of national weathe
 ## What it shows
 
 - **Panel:** weather icon and temperature. The width is fixed by the layout, so the widget does not overlap its neighbours.
-- **Current conditions:** temperature, description, feels-like, wind direction and speed, gusts, humidity, pressure in mmHg (at station level, not reduced to sea level), sunrise and sunset.
+- **Current conditions:** temperature, description, feels-like, wind direction and speed, gusts, humidity, pressure (at station level, not reduced to sea level), sunrise and sunset.
 - **Next 24 hours:** two rows of 12 hours with icon, temperature and precipitation probability.
 - **7 days:** description, precipitation probability and amount, minimum and maximum temperature.
 
-Interface language is Russian; units are metric (°C, m/s, mmHg, mm).
+Interface language is Russian. Units are metric by default (°C, m/s, mmHg, mm) and can be changed in the settings.
 
 ## How it works
 
@@ -27,7 +27,7 @@ Interface language is Russian; units are metric (°C, m/s, mmHg, mm).
 
 ## Settings
 
-Place name, latitude, longitude (decimal degrees) and the update interval in minutes (15 by default). There is no search by city name: coordinates are entered by hand.
+Place name, latitude, longitude (decimal degrees) and the update interval in minutes (15 by default). Units are chosen separately for temperature (°C, °F), wind speed (m/s, km/h, mph, knots), pressure (mmHg, hPa, inHg) and precipitation (mm, inches); changing them does not trigger a new request, the last response is converted on the spot. There is no search by city name: coordinates are entered by hand.
 
 ## Installation
 

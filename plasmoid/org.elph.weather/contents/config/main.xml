@@ -14,5 +14,17 @@
         <entry name="updateInterval" type="Int">
             <default>15</default>
         </entry>
+        <entry name="tempUnit" type="String">
+            <default>c</default>
+        </entry>
+        <entry name="windUnit" type="String">
+            <default>ms</default>
+        </entry>
+        <entry name="pressureUnit" type="String">
+            <default>mmhg</default>
+        </entry>
+        <entry name="precipUnit" type="String">
+            <default>mm</default>
+        </entry>
     </group>
 </kcfg>

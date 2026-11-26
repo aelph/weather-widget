@@ -14,6 +14,24 @@ PlasmoidItem {
     readonly property string longitude: Plasmoid.configuration.longitude.replace(",", ".")
     readonly property int updateMs: Math.max(5, Plasmoid.configuration.updateInterval) * 60000
 
+    // Выбранные единицы измерения; при смене последний ответ сервиса разбирается заново, без нового запроса
+    readonly property var units: ({
+        temp: Plasmoid.configuration.tempUnit,
+        wind: Plasmoid.configuration.windUnit,
+        pressure: Plasmoid.configuration.pressureUnit,
+        precip: Plasmoid.configuration.precipUnit
+    })
+    property string rawText: ""
+
+    onUnitsChanged: {
+        if (rawText === "") return
+        try {
+            weather = Weather.parse(rawText, units)
+        } catch (e) {
+            errorText = "Не удалось разобрать ответ Open-Meteo: " + e.message
+        }
+    }
+
     property var weather: null
     property string errorText: ""
     property bool loading: false
@@ -52,7 +70,8 @@ PlasmoidItem {
                 return
             }
             try {
-                weather = Weather.parse(xhr.responseText)
+                weather = Weather.parse(xhr.responseText, root.units)
+                rawText = xhr.responseText
                 fetchedAt = Date.now()
                 stale = false
                 errorText = ""
@@ -370,7 +389,7 @@ PlasmoidItem {
 
                         PC3.Label {
                             id: dayPrecip
-                            text: dayRow.modelData.precipSum > 0 ? dayRow.modelData.precipProb + "%, " + Weather.decimal(dayRow.modelData.precipSum) + " мм" : ""
+                            text: dayRow.modelData.precipSum > 0 ? dayRow.modelData.precipProb + "%, " + dayRow.modelData.precipText : ""
                             color: Kirigami.Theme.linkColor
                             Layout.row: dayRow.index
                             Layout.column: 3
