@@ -6,9 +6,17 @@ Tags: `kde-plasma` · `plasmoid` · `wayland` · `weather` · `open-meteo` · `q
 
 Русская версия: [ПРОЧТИ.md](ПРОЧТИ.md)
 
+![Popup with current conditions, the 24-hour and the 7-day forecast](screenshots/en-full.png)
+
+With both forecasts switched off in the settings the popup shrinks to current conditions:
+
+![Popup with current conditions only](screenshots/en-compact.png)
+
+The images are renders of the popup made without a desktop session (`plasmawindowed` on the offscreen platform), not screenshots of a real panel: fonts, icons and colours follow your Plasma theme.
+
 ## Why
 
-The stock Plasma weather widget takes its data from a handful of national weather services, and most of them cover only their own country. For many places that leaves a single provider, which reports observations from the nearest weather station: the station may be far from the place itself, and its readings may be several hours old. Open-Meteo gives a model-based value for any coordinates, refreshed every 15 minutes.
+The stock Plasma weather widget takes its data from a handful of national weather services, and most of them cover only their own country. For many places that leaves a single provider, which reports observations from the nearest weather station: the station may be far from the place itself, and its readings may be several hours old. The place is picked from the provider's list, so a location that is not on the list cannot be set at all. Open-Meteo gives a model-based value for any coordinates, refreshed every 15 minutes.
 
 ## What it shows
 
@@ -28,7 +36,7 @@ The interface follows the system language: English by default, Russian when Plas
 
 ## Settings
 
-Place name, latitude, longitude (decimal degrees) and the update interval in minutes (15 by default). Units are chosen separately for temperature (°C, °F), wind speed (m/s, km/h, mph, knots), pressure (mmHg, hPa, inHg) and precipitation (mm, inches); changing them does not trigger a new request, the last response is converted on the spot. Two checkboxes, both on by default, show or hide the 24-hour and the 7-day forecast; with both off the popup shrinks to current conditions only, and the details move below the temperature. The "Trends" section sets how many hours ahead the forecast is compared with the current value (1 by default, up to 12) and the thresholds: temperature 0.5 °C, humidity 3 %, wind 0.5 m/s, gusts 1 m/s, pressure 0.5 hPa by default. Thresholds are always in these units, whatever display units are chosen. There is no search by city name: coordinates are entered by hand.
+Place name, latitude, longitude (decimal degrees) and the update interval in minutes (15 by default). Units are chosen separately for temperature (°C, °F), wind speed (m/s, km/h, mph, knots), pressure (mmHg, hPa, inHg) and precipitation (mm, inches); changing them does not trigger a new request, the last response is converted on the spot. Two checkboxes, both on by default, show or hide the 24-hour and the 7-day forecast; with both off the popup shrinks to current conditions only, and the details move below the temperature. The "Trends" section sets how many hours ahead the forecast is compared with the current value (1 by default, up to 12) and the thresholds: temperature 0.5 °C, humidity 3 %, wind 0.5 m/s, gusts 1 m/s, pressure 0.5 hPa by default. Thresholds are always in these units, whatever display units are chosen. There is no search by city name: coordinates are entered by hand. The default coordinates are only an example: set your own after adding the widget.
 
 ## Installation
 
