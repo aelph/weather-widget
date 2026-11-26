@@ -16,7 +16,7 @@ The images are renders of the popup made without a desktop session (`plasmawindo
 
 ## Why
 
-The stock Plasma weather widget takes its data from a handful of national weather services, and most of them cover only their own country. For many places that leaves a single provider, which reports observations from the nearest weather station: the station may be far from the place itself, and its readings may be several hours old. The place is picked from the provider's list, so a location that is not on the list cannot be set at all. Open-Meteo gives a model-based value for any coordinates, refreshed every 15 minutes.
+The stock Plasma weather widget takes its data from a handful of national weather services, and most of them cover only their own country. For many places that leaves a single provider, which reports observations from the nearest weather station: the station may be far from the place itself, and its readings may be several hours old. Open-Meteo gives a model-based value for any coordinates, refreshed every 15 minutes.
 
 ## What it shows
 
@@ -29,14 +29,21 @@ The interface follows the system language: English by default, Russian when Plas
 
 ## How it works
 
-- `contents/ui/main.qml` requests the Open-Meteo forecast API with `XMLHttpRequest` and renders both representations.
-- `contents/ui/weather.js` maps WMO weather codes to descriptions and Breeze icon names and converts the response into the structure used by the layout.
+- `contents/ui/main.qml` detects the location (unless it is set by hand), requests the Open-Meteo forecast API with `XMLHttpRequest` and renders both representations.
+- `contents/ui/weather.js` maps WMO weather codes to descriptions and Breeze icon names, computes the trends and converts the response into the structure used by the layout.
 - Instead of one long timer the widget checks the clock every minute: data is refreshed once the configured interval has passed, one minute after a failed request, and within a minute after resume from suspend. A request without an answer is aborted after 30 seconds. Data older than two hours is dimmed on the panel.
 - Strings go through `i18n()` with English as the source language. The Russian catalogue is `po/ru.po`; `build-translations.sh` compiles it into `contents/locale/ru/LC_MESSAGES/plasma_applet_org.elph.weather.mo` (`install.sh` does this automatically when gettext is present). To add a language, put `po/<lang>.po` next to it.
 
 ## Settings
 
-Location and the update interval in minutes (15 by default). By default the location is detected by IP address: the widget asks ipwho.is (geojs.io as a fallback), which sees your IP address, and then the Open-Meteo geocoder for the place name in the system language. The location is detected again every three hours and when the refresh button is pressed; with a VPN it is the location of the VPN exit. With the "Detect location by IP address" checkbox off, the place name, latitude and longitude (decimal degrees) from the settings are used; their defaults are a neutral example (Greenwich). If the coordinates are empty or the detection fails, the popup shows a message and a button that opens the settings. Units are chosen separately for temperature (°C, °F), wind speed (m/s, km/h, mph, knots), pressure (mmHg, hPa, inHg) and precipitation (mm, inches); changing them does not trigger a new request, the last response is converted on the spot. Two checkboxes, both on by default, show or hide the 24-hour and the 7-day forecast; with both off the popup shrinks to current conditions only, and the details move below the temperature. The "Trends" section sets how many hours ahead the forecast is compared with the current value (1 by default, up to 12) and the thresholds: temperature 0.5 °C, humidity 3 %, wind 0.5 m/s, gusts 1 m/s, pressure 0.5 hPa by default. Thresholds are always in these units, whatever display units are chosen. There is no search by city name: with the detection off, coordinates are entered by hand.
+- **Location.** By default it is detected by IP address: the widget asks ipwho.is (geojs.io as a fallback), then the Open-Meteo geocoder for the place name in the system language. Detection is repeated every three hours and when the refresh button is pressed. With a VPN the result is the location of the VPN exit.
+- **Manual location.** With the "Detect location by IP address" checkbox off, the place name, latitude and longitude (decimal degrees) from the settings are used. Their defaults are a neutral example (Greenwich). There is no search by city name.
+- **Update interval** in minutes, 15 by default.
+- **Popup.** Two checkboxes, both on by default, show or hide the 24-hour and the 7-day forecast. With both off the popup shrinks to current conditions, and the details move below the temperature.
+- **Units**, chosen separately: temperature (°C, °F), wind speed (m/s, km/h, mph, knots), pressure (mmHg, hPa, inHg), precipitation (mm, inches). Changing them does not trigger a new request: the last response is converted on the spot.
+- **Trends.** How many hours ahead the forecast is compared with the current value (1 by default, up to 12) and the thresholds: temperature 0.5 °C, humidity 3 %, wind 0.5 m/s, gusts 1 m/s, pressure 0.5 hPa by default. Thresholds are always in these units, whatever display units are chosen.
+
+If the coordinates are empty or the detection fails, the popup shows a message and a button that opens the settings.
 
 ## Installation
 
@@ -44,10 +51,14 @@ Location and the update interval in minutes (15 by default). By default the loca
 ./install.sh
 ```
 
-The script installs or updates the package `org.elph.weather` in `~/.local/share/plasma/plasmoids/` with `kpackagetool6`. Then add the widget «Погода» via "Add Widgets…". After an update restart the shell: `systemctl --user restart plasma-plasmashell.service`.
+The script installs or updates the package `org.elph.weather` in `~/.local/share/plasma/plasmoids/` with `kpackagetool6`. Then add the widget "Weather" via "Add Widgets…". After an update restart the shell: `systemctl --user restart plasma-plasmashell.service`.
 
-Requires KDE Plasma 6. Developed and used on Plasma 6.8.
+To remove it: `kpackagetool6 -t Plasma/Applet -r org.elph.weather`.
 
-## Data
+Requires KDE Plasma 6; tested on Plasma 6.8. Rebuilding the translation needs gettext (`msgfmt`); without it the catalogue shipped in the package is installed.
+
+## Data and privacy
 
 Weather data by [Open-Meteo](https://open-meteo.com), licensed under CC BY 4.0. The free API is intended for non-commercial use.
+
+The widget talks only to the services named here. Open-Meteo receives the coordinates of the place. With detection by IP address on, [ipwho.is](https://ipwho.is) or, as a fallback, [geojs.io](https://www.geojs.io) sees your IP address, and the Open-Meteo geocoder receives the name of the detected place. With detection off, only the forecast request is made.
