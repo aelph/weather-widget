@@ -218,7 +218,7 @@ function parse(text, units, trends) {
         icon: icon(c.weather_code, c.is_day === 1),
         text: describe(c.weather_code),
         humidity: Math.round(c.relative_humidity_2m) + " %",
-        wind: windDir(c.wind_direction_10m) + " " + speed(c.wind_speed_10m, u.wind),
+        wind: windDir(c.wind_direction_10m) + ", " + speed(c.wind_speed_10m, u.wind),
         gusts: speed(c.wind_gusts_10m, u.wind),
         // Давление на уровне места, а не приведённое к уровню моря
         pressure: pressure(c.surface_pressure, u.pressure),
