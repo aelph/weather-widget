@@ -46,25 +46,25 @@ KCM.SimpleKCM {
     Kirigami.FormLayout {
         QQC2.TextField {
             id: cityField
-            Kirigami.FormData.label: "Название:"
+            Kirigami.FormData.label: i18n("Name:")
         }
 
         QQC2.TextField {
             id: latField
-            Kirigami.FormData.label: "Широта:"
+            Kirigami.FormData.label: i18n("Latitude:")
             placeholderText: "51.48"
             validator: RegularExpressionValidator { regularExpression: /-?\d{1,2}([.,]\d+)?/ }
         }
 
         QQC2.TextField {
             id: lonField
-            Kirigami.FormData.label: "Долгота:"
+            Kirigami.FormData.label: i18n("Longitude:")
             placeholderText: "0.00"
             validator: RegularExpressionValidator { regularExpression: /-?\d{1,3}([.,]\d+)?/ }
         }
 
         QQC2.Label {
-            text: "Координаты в десятичных градусах: северная широта и восточная долгота положительные."
+            text: i18n("Coordinates in decimal degrees: north latitude and east longitude are positive.")
             wrapMode: Text.WordWrap
             opacity: 0.7
             Layout.fillWidth: true
@@ -72,7 +72,7 @@ KCM.SimpleKCM {
 
         QQC2.SpinBox {
             id: intervalSpin
-            Kirigami.FormData.label: "Обновлять каждые, мин:"
+            Kirigami.FormData.label: i18n("Update every, min:")
             from: 5
             to: 180
             stepSize: 5
@@ -80,61 +80,61 @@ KCM.SimpleKCM {
 
         Item {
             Kirigami.FormData.isSection: true
-            Kirigami.FormData.label: "Раскрытый вид"
+            Kirigami.FormData.label: i18n("Popup")
         }
 
         QQC2.CheckBox {
             id: hourlyCheck
-            Kirigami.FormData.label: "Показывать:"
-            text: "Прогноз на 24 часа"
+            Kirigami.FormData.label: i18n("Show:")
+            text: i18n("24-hour forecast")
         }
 
         QQC2.CheckBox {
             id: dailyCheck
-            text: "Прогноз на 7 дней"
+            text: i18n("7-day forecast")
         }
 
         Item {
             Kirigami.FormData.isSection: true
-            Kirigami.FormData.label: "Единицы измерения"
+            Kirigami.FormData.label: i18n("Units")
         }
 
         UnitCombo {
             id: tempCombo
-            Kirigami.FormData.label: "Температура:"
+            Kirigami.FormData.label: i18n("Temperature:")
             model: [
-                { text: "градусы Цельсия, °C", value: "c" },
-                { text: "градусы Фаренгейта, °F", value: "f" }
+                { text: i18n("degrees Celsius, °C"), value: "c" },
+                { text: i18n("degrees Fahrenheit, °F"), value: "f" }
             ]
         }
 
         UnitCombo {
             id: windCombo
-            Kirigami.FormData.label: "Скорость ветра:"
+            Kirigami.FormData.label: i18n("Wind speed:")
             model: [
-                { text: "метры в секунду, м/с", value: "ms" },
-                { text: "километры в час, км/ч", value: "kmh" },
-                { text: "мили в час", value: "mph" },
-                { text: "узлы", value: "kn" }
+                { text: i18n("metres per second, m/s"), value: "ms" },
+                { text: i18n("kilometres per hour, km/h"), value: "kmh" },
+                { text: i18n("miles per hour"), value: "mph" },
+                { text: i18n("knots"), value: "kn" }
             ]
         }
 
         UnitCombo {
             id: pressureCombo
-            Kirigami.FormData.label: "Давление:"
+            Kirigami.FormData.label: i18n("Pressure:")
             model: [
-                { text: "миллиметры ртутного столба", value: "mmhg" },
-                { text: "гектопаскали, гПа", value: "hpa" },
-                { text: "дюймы ртутного столба", value: "inhg" }
+                { text: i18n("millimetres of mercury"), value: "mmhg" },
+                { text: i18n("hectopascals, hPa"), value: "hpa" },
+                { text: i18n("inches of mercury"), value: "inhg" }
             ]
         }
 
         UnitCombo {
             id: precipCombo
-            Kirigami.FormData.label: "Осадки:"
+            Kirigami.FormData.label: i18n("Precipitation:")
             model: [
-                { text: "миллиметры, мм", value: "mm" },
-                { text: "дюймы", value: "inch" }
+                { text: i18n("millimetres, mm"), value: "mm" },
+                { text: i18n("inches"), value: "inch" }
             ]
         }
     }

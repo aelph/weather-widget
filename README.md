@@ -17,13 +17,14 @@ The stock Plasma weather widget takes its data from a handful of national weathe
 - **Next 24 hours:** two rows of 12 hours with icon, temperature and precipitation probability.
 - **7 days:** description, precipitation probability and amount, minimum and maximum temperature.
 
-Interface language is Russian. Units are metric by default (°C, m/s, mmHg, mm) and can be changed in the settings.
+The interface follows the system language: English by default, Russian when Plasma is set to Russian. Units are metric by default (°C, m/s, mmHg, mm) and can be changed in the settings.
 
 ## How it works
 
 - `contents/ui/main.qml` requests the Open-Meteo forecast API with `XMLHttpRequest` and renders both representations.
-- `contents/ui/weather.js` maps WMO weather codes to Russian descriptions and Breeze icon names and converts the response into the structure used by the layout.
+- `contents/ui/weather.js` maps WMO weather codes to descriptions and Breeze icon names and converts the response into the structure used by the layout.
 - Instead of one long timer the widget checks the clock every minute: data is refreshed once the configured interval has passed, one minute after a failed request, and within a minute after resume from suspend. A request without an answer is aborted after 30 seconds. Data older than two hours is dimmed on the panel.
+- Strings go through `i18n()` with English as the source language. The Russian catalogue is `po/ru.po`; `build-translations.sh` compiles it into `contents/locale/ru/LC_MESSAGES/plasma_applet_org.elph.weather.mo` (`install.sh` does this automatically when gettext is present). To add a language, put `po/<lang>.po` next to it.
 
 ## Settings
 

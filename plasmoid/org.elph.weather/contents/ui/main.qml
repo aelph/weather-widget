@@ -33,7 +33,7 @@ PlasmoidItem {
         try {
             weather = Weather.parse(rawText, units)
         } catch (e) {
-            errorText = "Не удалось разобрать ответ Open-Meteo: " + e.message
+            errorText = i18n("Could not parse the Open-Meteo response: %1", e.message)
         }
     }
 
@@ -49,8 +49,8 @@ PlasmoidItem {
 
     toolTipMainText: cityName
     toolTipSubText: {
-        if (!weather) return errorText !== "" ? errorText : "Загрузка…"
-        let s = weather.temp + ", " + weather.text.toLowerCase() + "\nОщущается " + weather.feels + ", ветер " + weather.wind
+        if (!weather) return errorText !== "" ? errorText : i18n("Loading…")
+        let s = i18nc("temperature, description; feels-like temperature, wind", "%1, %2\nFeels like %3, wind %4", weather.temp, weather.text.toLowerCase(), weather.feels, weather.wind)
         if (errorText !== "") s += "\n" + errorText
         return s
     }
@@ -58,7 +58,7 @@ PlasmoidItem {
     function refresh() {
         if (loading) return
         if (isNaN(parseFloat(latitude)) || isNaN(parseFloat(longitude))) {
-            errorText = "Не заданы координаты места"
+            errorText = i18n("Location coordinates are not set")
             return
         }
         loading = true
@@ -71,7 +71,7 @@ PlasmoidItem {
             request = null
             loading = false
             if (xhr.status !== 200) {
-                errorText = xhr.status === 0 ? "Нет связи с Open-Meteo" : "Open-Meteo ответил кодом " + xhr.status
+                errorText = xhr.status === 0 ? i18n("No connection to Open-Meteo") : i18n("Open-Meteo returned status %1", String(xhr.status))
                 return
             }
             try {
@@ -81,7 +81,7 @@ PlasmoidItem {
                 stale = false
                 errorText = ""
             } catch (e) {
-                errorText = "Не удалось разобрать ответ Open-Meteo: " + e.message
+                errorText = i18n("Could not parse the Open-Meteo response: %1", e.message)
             }
         }
         xhr.open("GET", Weather.url(latitude, longitude))
@@ -97,7 +97,7 @@ PlasmoidItem {
             const xhr = root.request
             root.request = null
             root.loading = false
-            root.errorText = "Open-Meteo не ответил за 30 секунд"
+            root.errorText = i18n("Open-Meteo did not respond within 30 seconds")
             if (xhr) xhr.abort()
         }
     }
@@ -179,7 +179,7 @@ PlasmoidItem {
 
                 PC3.Label {
                     visible: root.weather !== null
-                    text: root.weather ? "данные на " + root.weather.time : ""
+                    text: root.weather ? i18nc("time of the observation", "as of %1", root.weather.time) : ""
                     opacity: 0.6
                 }
 
@@ -187,7 +187,7 @@ PlasmoidItem {
                     icon.name: "view-refresh"
                     enabled: !root.loading
                     onClicked: root.refresh()
-                    PC3.ToolTip { text: "Обновить" }
+                    PC3.ToolTip { text: i18n("Refresh") }
                 }
             }
 
@@ -202,7 +202,7 @@ PlasmoidItem {
 
             PC3.Label {
                 visible: root.weather === null && root.errorText === ""
-                text: "Загрузка…"
+                text: i18n("Loading…")
                 opacity: 0.6
                 Layout.alignment: Qt.AlignHCenter
             }
@@ -252,9 +252,9 @@ PlasmoidItem {
 
                     Repeater {
                         model: root.weather ? [
-                            ["Ощущается", root.weather.feels], ["Влажность", root.weather.humidity],
-                            ["Ветер", root.weather.wind], ["Давление", root.weather.pressure],
-                            ["Порывы", root.weather.gusts], ["Солнце", root.weather.sunrise + " – " + root.weather.sunset]
+                            [i18n("Feels like"), root.weather.feels], [i18n("Humidity"), root.weather.humidity],
+                            [i18n("Wind"), root.weather.wind], [i18n("Pressure"), root.weather.pressure],
+                            [i18n("Gusts"), root.weather.gusts], [i18n("Sun"), root.weather.sunrise + " – " + root.weather.sunset]
                         ] : []
 
                         RowLayout {
@@ -284,7 +284,7 @@ PlasmoidItem {
             // Почасовой прогноз: 24 часа от текущего, двумя рядами по 12
             PC3.Label {
                 visible: root.weather !== null && root.showHourly
-                text: "Ближайшие 24 часа"
+                text: i18n("Next 24 hours")
                 opacity: 0.6
             }
 
@@ -355,7 +355,7 @@ PlasmoidItem {
             // Прогноз на 7 дней
             PC3.Label {
                 visible: root.weather !== null && root.showDaily
-                text: "7 дней"
+                text: i18n("7 days")
                 opacity: 0.6
             }
 

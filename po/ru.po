@@ -1,0 +1,359 @@
+# Русский перевод виджета погоды org.elph.weather
+msgid ""
+msgstr ""
+"Project-Id-Version: org.elph.weather\n"
+"Language: ru\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+msgctxt "wind direction"
+msgid "N"
+msgstr "С"
+
+msgctxt "wind direction"
+msgid "NNE"
+msgstr "ССВ"
+
+msgctxt "wind direction"
+msgid "NE"
+msgstr "СВ"
+
+msgctxt "wind direction"
+msgid "ENE"
+msgstr "ВСВ"
+
+msgctxt "wind direction"
+msgid "E"
+msgstr "В"
+
+msgctxt "wind direction"
+msgid "ESE"
+msgstr "ВЮВ"
+
+msgctxt "wind direction"
+msgid "SE"
+msgstr "ЮВ"
+
+msgctxt "wind direction"
+msgid "SSE"
+msgstr "ЮЮВ"
+
+msgctxt "wind direction"
+msgid "S"
+msgstr "Ю"
+
+msgctxt "wind direction"
+msgid "SSW"
+msgstr "ЮЮЗ"
+
+msgctxt "wind direction"
+msgid "SW"
+msgstr "ЮЗ"
+
+msgctxt "wind direction"
+msgid "WSW"
+msgstr "ЗЮЗ"
+
+msgctxt "wind direction"
+msgid "W"
+msgstr "З"
+
+msgctxt "wind direction"
+msgid "WNW"
+msgstr "ЗСЗ"
+
+msgctxt "wind direction"
+msgid "NW"
+msgstr "СЗ"
+
+msgctxt "wind direction"
+msgid "NNW"
+msgstr "ССЗ"
+
+msgctxt "weekday, short"
+msgid "Sun"
+msgstr "Вс"
+
+msgctxt "weekday, short"
+msgid "Mon"
+msgstr "Пн"
+
+msgctxt "weekday, short"
+msgid "Tue"
+msgstr "Вт"
+
+msgctxt "weekday, short"
+msgid "Wed"
+msgstr "Ср"
+
+msgctxt "weekday, short"
+msgid "Thu"
+msgstr "Чт"
+
+msgctxt "weekday, short"
+msgid "Fri"
+msgstr "Пт"
+
+msgctxt "weekday, short"
+msgid "Sat"
+msgstr "Сб"
+
+msgid "%1 km/h"
+msgstr "%1 км/ч"
+
+msgid "%1 mph"
+msgstr "%1 миль/ч"
+
+msgid "%1 kn"
+msgstr "%1 уз"
+
+msgid "%1 m/s"
+msgstr "%1 м/с"
+
+msgid "%1 hPa"
+msgstr "%1 гПа"
+
+msgid "%1 inHg"
+msgstr "%1 дюйм. рт. ст."
+
+msgid "%1 mmHg"
+msgstr "%1 мм рт. ст."
+
+msgid "%1 in"
+msgstr "%1 дюйм."
+
+msgid "%1 mm"
+msgstr "%1 мм"
+
+msgctxt "weekday and day of month"
+msgid "%1, %2"
+msgstr "%1, %2"
+
+msgid "service error"
+msgstr "ошибка сервиса"
+
+msgid "Clear"
+msgstr "Ясно"
+
+msgid "Mostly clear"
+msgstr "Преимущественно ясно"
+
+msgid "Partly cloudy"
+msgstr "Переменная облачность"
+
+msgid "Overcast"
+msgstr "Пасмурно"
+
+msgid "Fog"
+msgstr "Туман"
+
+msgid "Rime fog"
+msgstr "Туман с изморозью"
+
+msgid "Light drizzle"
+msgstr "Слабая морось"
+
+msgid "Drizzle"
+msgstr "Морось"
+
+msgid "Heavy drizzle"
+msgstr "Сильная морось"
+
+msgid "Freezing drizzle"
+msgstr "Ледяная морось"
+
+msgid "Heavy freezing drizzle"
+msgstr "Сильная ледяная морось"
+
+msgid "Light rain"
+msgstr "Небольшой дождь"
+
+msgid "Rain"
+msgstr "Дождь"
+
+msgid "Heavy rain"
+msgstr "Сильный дождь"
+
+msgid "Freezing rain"
+msgstr "Ледяной дождь"
+
+msgid "Heavy freezing rain"
+msgstr "Сильный ледяной дождь"
+
+msgid "Light snow"
+msgstr "Небольшой снег"
+
+msgid "Snow"
+msgstr "Снег"
+
+msgid "Heavy snow"
+msgstr "Сильный снег"
+
+msgid "Snow grains"
+msgstr "Снежная крупа"
+
+msgid "Light showers"
+msgstr "Небольшой ливень"
+
+msgid "Showers"
+msgstr "Ливень"
+
+msgid "Heavy showers"
+msgstr "Сильный ливень"
+
+msgid "Snow showers"
+msgstr "Снегопад"
+
+msgid "Heavy snow showers"
+msgstr "Сильный снегопад"
+
+msgid "Thunderstorm"
+msgstr "Гроза"
+
+msgid "Thunderstorm with hail"
+msgstr "Гроза с градом"
+
+msgid "Thunderstorm with heavy hail"
+msgstr "Гроза с сильным градом"
+
+msgid "No data"
+msgstr "Нет данных"
+
+msgid "Today"
+msgstr "Сегодня"
+
+msgid "Tomorrow"
+msgstr "Завтра"
+
+msgctxt "temperature, description; feels-like temperature, wind"
+msgid "%1, %2\nFeels like %3, wind %4"
+msgstr "%1, %2\nОщущается %3, ветер %4"
+
+msgid "Open-Meteo returned status %1"
+msgstr "Open-Meteo ответил кодом %1"
+
+msgid "Could not parse the Open-Meteo response: %1"
+msgstr "Не удалось разобрать ответ Open-Meteo: %1"
+
+msgctxt "time of the observation"
+msgid "as of %1"
+msgstr "данные на %1"
+
+msgid "Loading…"
+msgstr "Загрузка…"
+
+msgid "Location coordinates are not set"
+msgstr "Не заданы координаты места"
+
+msgid "No connection to Open-Meteo"
+msgstr "Нет связи с Open-Meteo"
+
+msgid "Open-Meteo did not respond within 30 seconds"
+msgstr "Open-Meteo не ответил за 30 секунд"
+
+msgid "Refresh"
+msgstr "Обновить"
+
+msgid "Feels like"
+msgstr "Ощущается"
+
+msgid "Humidity"
+msgstr "Влажность"
+
+msgid "Wind"
+msgstr "Ветер"
+
+msgid "Pressure"
+msgstr "Давление"
+
+msgid "Gusts"
+msgstr "Порывы"
+
+msgid "Sun"
+msgstr "Солнце"
+
+msgid "Next 24 hours"
+msgstr "Ближайшие 24 часа"
+
+msgid "7 days"
+msgstr "7 дней"
+
+msgid "Name:"
+msgstr "Название:"
+
+msgid "Latitude:"
+msgstr "Широта:"
+
+msgid "Longitude:"
+msgstr "Долгота:"
+
+msgid "Coordinates in decimal degrees: north latitude and east longitude are positive."
+msgstr "Координаты в десятичных градусах: северная широта и восточная долгота положительные."
+
+msgid "Update every, min:"
+msgstr "Обновлять каждые, мин:"
+
+msgid "Popup"
+msgstr "Раскрытый вид"
+
+msgid "Show:"
+msgstr "Показывать:"
+
+msgid "24-hour forecast"
+msgstr "Прогноз на 24 часа"
+
+msgid "7-day forecast"
+msgstr "Прогноз на 7 дней"
+
+msgid "Units"
+msgstr "Единицы измерения"
+
+msgid "Temperature:"
+msgstr "Температура:"
+
+msgid "degrees Celsius, °C"
+msgstr "градусы Цельсия, °C"
+
+msgid "degrees Fahrenheit, °F"
+msgstr "градусы Фаренгейта, °F"
+
+msgid "Wind speed:"
+msgstr "Скорость ветра:"
+
+msgid "metres per second, m/s"
+msgstr "метры в секунду, м/с"
+
+msgid "kilometres per hour, km/h"
+msgstr "километры в час, км/ч"
+
+msgid "miles per hour"
+msgstr "мили в час"
+
+msgid "knots"
+msgstr "узлы"
+
+msgid "Pressure:"
+msgstr "Давление:"
+
+msgid "millimetres of mercury"
+msgstr "миллиметры ртутного столба"
+
+msgid "hectopascals, hPa"
+msgstr "гектопаскали, гПа"
+
+msgid "inches of mercury"
+msgstr "дюймы ртутного столба"
+
+msgid "Precipitation:"
+msgstr "Осадки:"
+
+msgid "millimetres, mm"
+msgstr "миллиметры, мм"
+
+msgid "inches"
+msgstr "дюймы"
+
+msgid "Location"
+msgstr "Место"

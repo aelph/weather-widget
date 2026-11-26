@@ -1,42 +1,42 @@
-.pragma library
+// Не библиотека (.pragma library): библиотечному сценарию недоступны i18n() и Qt.locale() из окружения QML
 
 // Коды погоды ВМО, которые отдаёт Open-Meteo: описание, значок днём, значок ночью
 const CODES = {
-    0: ["Ясно", "weather-clear", "weather-clear-night"],
-    1: ["Преимущественно ясно", "weather-few-clouds", "weather-few-clouds-night"],
-    2: ["Переменная облачность", "weather-clouds", "weather-clouds-night"],
-    3: ["Пасмурно", "weather-overcast", "weather-overcast"],
-    45: ["Туман", "weather-fog", "weather-fog"],
-    48: ["Туман с изморозью", "weather-fog", "weather-fog"],
-    51: ["Слабая морось", "weather-showers-scattered-day", "weather-showers-scattered-night"],
-    53: ["Морось", "weather-showers-scattered", "weather-showers-scattered"],
-    55: ["Сильная морось", "weather-showers-scattered", "weather-showers-scattered"],
-    56: ["Ледяная морось", "weather-freezing-scattered-rain", "weather-freezing-scattered-rain"],
-    57: ["Сильная ледяная морось", "weather-freezing-scattered-rain", "weather-freezing-scattered-rain"],
-    61: ["Небольшой дождь", "weather-showers-scattered", "weather-showers-scattered"],
-    63: ["Дождь", "weather-showers", "weather-showers"],
-    65: ["Сильный дождь", "weather-showers", "weather-showers"],
-    66: ["Ледяной дождь", "weather-freezing-rain", "weather-freezing-rain"],
-    67: ["Сильный ледяной дождь", "weather-freezing-rain", "weather-freezing-rain"],
-    71: ["Небольшой снег", "weather-snow-scattered", "weather-snow-scattered"],
-    73: ["Снег", "weather-snow", "weather-snow"],
-    75: ["Сильный снег", "weather-snow", "weather-snow"],
-    77: ["Снежная крупа", "weather-snow-scattered", "weather-snow-scattered"],
-    80: ["Небольшой ливень", "weather-showers-scattered-day", "weather-showers-scattered-night"],
-    81: ["Ливень", "weather-showers-day", "weather-showers-night"],
-    82: ["Сильный ливень", "weather-showers", "weather-showers"],
-    85: ["Снегопад", "weather-snow-scattered-day", "weather-snow-scattered-night"],
-    86: ["Сильный снегопад", "weather-snow-day", "weather-snow-night"],
-    95: ["Гроза", "weather-storm", "weather-storm"],
-    96: ["Гроза с градом", "weather-hail", "weather-hail"],
-    99: ["Гроза с сильным градом", "weather-hail", "weather-hail"]
+    0: [i18n("Clear"), "weather-clear", "weather-clear-night"],
+    1: [i18n("Mostly clear"), "weather-few-clouds", "weather-few-clouds-night"],
+    2: [i18n("Partly cloudy"), "weather-clouds", "weather-clouds-night"],
+    3: [i18n("Overcast"), "weather-overcast", "weather-overcast"],
+    45: [i18n("Fog"), "weather-fog", "weather-fog"],
+    48: [i18n("Rime fog"), "weather-fog", "weather-fog"],
+    51: [i18n("Light drizzle"), "weather-showers-scattered-day", "weather-showers-scattered-night"],
+    53: [i18n("Drizzle"), "weather-showers-scattered", "weather-showers-scattered"],
+    55: [i18n("Heavy drizzle"), "weather-showers-scattered", "weather-showers-scattered"],
+    56: [i18n("Freezing drizzle"), "weather-freezing-scattered-rain", "weather-freezing-scattered-rain"],
+    57: [i18n("Heavy freezing drizzle"), "weather-freezing-scattered-rain", "weather-freezing-scattered-rain"],
+    61: [i18n("Light rain"), "weather-showers-scattered", "weather-showers-scattered"],
+    63: [i18n("Rain"), "weather-showers", "weather-showers"],
+    65: [i18n("Heavy rain"), "weather-showers", "weather-showers"],
+    66: [i18n("Freezing rain"), "weather-freezing-rain", "weather-freezing-rain"],
+    67: [i18n("Heavy freezing rain"), "weather-freezing-rain", "weather-freezing-rain"],
+    71: [i18n("Light snow"), "weather-snow-scattered", "weather-snow-scattered"],
+    73: [i18n("Snow"), "weather-snow", "weather-snow"],
+    75: [i18n("Heavy snow"), "weather-snow", "weather-snow"],
+    77: [i18n("Snow grains"), "weather-snow-scattered", "weather-snow-scattered"],
+    80: [i18n("Light showers"), "weather-showers-scattered-day", "weather-showers-scattered-night"],
+    81: [i18n("Showers"), "weather-showers-day", "weather-showers-night"],
+    82: [i18n("Heavy showers"), "weather-showers", "weather-showers"],
+    85: [i18n("Snow showers"), "weather-snow-scattered-day", "weather-snow-scattered-night"],
+    86: [i18n("Heavy snow showers"), "weather-snow-day", "weather-snow-night"],
+    95: [i18n("Thunderstorm"), "weather-storm", "weather-storm"],
+    96: [i18n("Thunderstorm with hail"), "weather-hail", "weather-hail"],
+    99: [i18n("Thunderstorm with heavy hail"), "weather-hail", "weather-hail"]
 }
 
-const WIND = ["С", "ССВ", "СВ", "ВСВ", "В", "ВЮВ", "ЮВ", "ЮЮВ", "Ю", "ЮЮЗ", "ЮЗ", "ЗЮЗ", "З", "ЗСЗ", "СЗ", "ССЗ"]
-const WEEKDAYS = ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"]
+const WIND = [i18nc("wind direction", "N"), i18nc("wind direction", "NNE"), i18nc("wind direction", "NE"), i18nc("wind direction", "ENE"), i18nc("wind direction", "E"), i18nc("wind direction", "ESE"), i18nc("wind direction", "SE"), i18nc("wind direction", "SSE"), i18nc("wind direction", "S"), i18nc("wind direction", "SSW"), i18nc("wind direction", "SW"), i18nc("wind direction", "WSW"), i18nc("wind direction", "W"), i18nc("wind direction", "WNW"), i18nc("wind direction", "NW"), i18nc("wind direction", "NNW")]
+const WEEKDAYS = [i18nc("weekday, short", "Sun"), i18nc("weekday, short", "Mon"), i18nc("weekday, short", "Tue"), i18nc("weekday, short", "Wed"), i18nc("weekday, short", "Thu"), i18nc("weekday, short", "Fri"), i18nc("weekday, short", "Sat")]
 
 function describe(code) {
-    return CODES[code] ? CODES[code][0] : "Нет данных"
+    return CODES[code] ? CODES[code][0] : i18n("No data")
 }
 
 function icon(code, isDay) {
@@ -52,29 +52,30 @@ function temp(value, unit) {
     return (r < 0 ? "−" + (-r) : r) + "°"
 }
 
+// Десятичный разделитель – по региональным настройкам системы
 function decimal(value, digits) {
-    return value.toFixed(digits === undefined ? 1 : digits).replace(".", ",")
+    return value.toFixed(digits === undefined ? 1 : digits).replace(".", Qt.locale().decimalPoint)
 }
 
 // Скорость ветра из м/с
 function speed(value, unit) {
-    if (unit === "kmh") return Math.round(value * 3.6) + " км/ч"
-    if (unit === "mph") return Math.round(value * 2.236936) + " миль/ч"
-    if (unit === "kn") return Math.round(value * 1.943844) + " уз"
-    return decimal(value) + " м/с"
+    if (unit === "kmh") return i18n("%1 km/h", String(Math.round(value * 3.6)))
+    if (unit === "mph") return i18n("%1 mph", String(Math.round(value * 2.236936)))
+    if (unit === "kn") return i18n("%1 kn", String(Math.round(value * 1.943844)))
+    return i18n("%1 m/s", decimal(value))
 }
 
 // Давление из гПа
 function pressure(value, unit) {
-    if (unit === "hpa") return Math.round(value) + " гПа"
-    if (unit === "inhg") return decimal(value * 0.0295300, 2) + " дюйм. рт. ст."
-    return Math.round(value * 0.750062) + " мм рт. ст."
+    if (unit === "hpa") return i18n("%1 hPa", String(Math.round(value)))
+    if (unit === "inhg") return i18n("%1 inHg", decimal(value * 0.0295300, 2))
+    return i18n("%1 mmHg", String(Math.round(value * 0.750062)))
 }
 
 // Количество осадков из мм
 function precipitation(value, unit) {
-    if (unit === "inch") return decimal(value / 25.4, 2) + " дюйм."
-    return decimal(value) + " мм"
+    if (unit === "inch") return i18n("%1 in", decimal(value / 25.4, 2))
+    return i18n("%1 mm", decimal(value))
 }
 
 // Направление, откуда дует ветер
@@ -92,10 +93,10 @@ function clock(iso) {
 }
 
 function dayLabel(iso, index) {
-    if (index === 0) return "Сегодня"
-    if (index === 1) return "Завтра"
+    if (index === 0) return i18n("Today")
+    if (index === 1) return i18n("Tomorrow")
     const d = new Date(parseInt(iso.substring(0, 4)), parseInt(iso.substring(5, 7)) - 1, parseInt(iso.substring(8, 10)))
-    return WEEKDAYS[d.getDay()] + ", " + d.getDate()
+    return i18nc("weekday and day of month", "%1, %2", WEEKDAYS[d.getDay()], String(d.getDate()))
 }
 
 function url(latitude, longitude) {
@@ -111,7 +112,7 @@ function url(latitude, longitude) {
 function parse(text, units) {
     const u = units || {}
     const j = JSON.parse(text)
-    if (j.error) throw new Error(j.reason || "ошибка сервиса")
+    if (j.error) throw new Error(j.reason || i18n("service error"))
     const c = j.current, h = j.hourly, d = j.daily
 
     const hourly = []
