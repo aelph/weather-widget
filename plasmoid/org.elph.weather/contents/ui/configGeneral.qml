@@ -13,6 +13,8 @@ KCM.SimpleKCM {
     property alias cfg_windUnit: windCombo.value
     property alias cfg_pressureUnit: pressureCombo.value
     property alias cfg_precipUnit: precipCombo.value
+    property alias cfg_showHourly: hourlyCheck.checked
+    property alias cfg_showDaily: dailyCheck.checked
 
     // Plasma передаёт странице и значения по умолчанию; без этих свойств журнал засоряется предупреждениями
     property string cfg_cityNameDefault
@@ -23,6 +25,8 @@ KCM.SimpleKCM {
     property string cfg_windUnitDefault
     property string cfg_pressureUnitDefault
     property string cfg_precipUnitDefault
+    property bool cfg_showHourlyDefault
+    property bool cfg_showDailyDefault
 
     // Список с выбором единицы: в настройках хранится код (value), а не номер строки
     component UnitCombo: QQC2.ComboBox {
@@ -72,6 +76,22 @@ KCM.SimpleKCM {
             from: 5
             to: 180
             stepSize: 5
+        }
+
+        Item {
+            Kirigami.FormData.isSection: true
+            Kirigami.FormData.label: "Раскрытый вид"
+        }
+
+        QQC2.CheckBox {
+            id: hourlyCheck
+            Kirigami.FormData.label: "Показывать:"
+            text: "Прогноз на 24 часа"
+        }
+
+        QQC2.CheckBox {
+            id: dailyCheck
+            text: "Прогноз на 7 дней"
         }
 
         Item {

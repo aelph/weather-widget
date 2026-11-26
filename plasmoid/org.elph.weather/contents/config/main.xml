@@ -26,5 +26,11 @@
         <entry name="precipUnit" type="String">
             <default>mm</default>
         </entry>
+        <entry name="showHourly" type="Bool">
+            <default>true</default>
+        </entry>
+        <entry name="showDaily" type="Bool">
+            <default>true</default>
+        </entry>
     </group>
 </kcfg>

@@ -23,6 +23,11 @@ PlasmoidItem {
     })
     property string rawText: ""
 
+    readonly property bool showHourly: Plasmoid.configuration.showHourly
+    readonly property bool showDaily: Plasmoid.configuration.showDaily
+    // Без обоих прогнозов окно сужается до текущей погоды, а показатели уходят под температуру
+    readonly property bool narrow: !showHourly && !showDaily
+
     onUnitsChanged: {
         if (rawText === "") return
         try {
@@ -146,10 +151,13 @@ PlasmoidItem {
     }
 
     fullRepresentation: Item {
-        Layout.preferredWidth: Kirigami.Units.gridUnit * 30
+        Layout.preferredWidth: root.narrow ? Math.min(Kirigami.Units.gridUnit * 30, Math.max(Kirigami.Units.gridUnit * 16, current.implicitWidth + Kirigami.Units.largeSpacing * 2)) : Kirigami.Units.gridUnit * 30
         Layout.preferredHeight: content.implicitHeight + Kirigami.Units.largeSpacing * 2
         Layout.minimumWidth: Layout.preferredWidth
         Layout.minimumHeight: Layout.preferredHeight
+        // Наибольший размер равен предпочтительному, чтобы окно сжималось, когда прогнозы отключены
+        Layout.maximumWidth: Layout.preferredWidth
+        Layout.maximumHeight: Layout.preferredHeight
 
         ColumnLayout {
             id: content
@@ -199,33 +207,43 @@ PlasmoidItem {
                 Layout.alignment: Qt.AlignHCenter
             }
 
-            // Текущая погода
-            RowLayout {
+            // Текущая погода: в широком окне показатели стоят справа от температуры, в узком – под ней
+            GridLayout {
+                id: current
                 visible: root.weather !== null
                 Layout.fillWidth: true
-                spacing: Kirigami.Units.largeSpacing
+                columns: root.narrow ? 1 : 3
+                columnSpacing: Kirigami.Units.largeSpacing
+                rowSpacing: Kirigami.Units.largeSpacing
 
-                Kirigami.Icon {
-                    source: root.weather ? root.weather.icon : ""
-                    Layout.preferredWidth: Kirigami.Units.iconSizes.huge
-                    Layout.preferredHeight: Kirigami.Units.iconSizes.huge
-                }
+                RowLayout {
+                    spacing: Kirigami.Units.largeSpacing
 
-                ColumnLayout {
-                    spacing: 0
-
-                    PC3.Label {
-                        text: root.weather ? root.weather.temp : ""
-                        font.pointSize: Kirigami.Theme.defaultFont.pointSize * 2.6
-                        font.weight: Font.Light
+                    Kirigami.Icon {
+                        source: root.weather ? root.weather.icon : ""
+                        Layout.preferredWidth: Kirigami.Units.iconSizes.huge
+                        Layout.preferredHeight: Kirigami.Units.iconSizes.huge
                     }
 
-                    PC3.Label {
-                        text: root.weather ? root.weather.text : ""
+                    ColumnLayout {
+                        spacing: 0
+
+                        PC3.Label {
+                            text: root.weather ? root.weather.temp : ""
+                            font.pointSize: Kirigami.Theme.defaultFont.pointSize * 2.6
+                            font.weight: Font.Light
+                        }
+
+                        PC3.Label {
+                            text: root.weather ? root.weather.text : ""
+                        }
                     }
                 }
 
-                Item { Layout.fillWidth: true }
+                Item {
+                    visible: !root.narrow
+                    Layout.fillWidth: true
+                }
 
                 GridLayout {
                     columns: 4
@@ -258,20 +276,20 @@ PlasmoidItem {
             }
 
             Kirigami.Separator {
-                visible: root.weather !== null
+                visible: root.weather !== null && !root.narrow
                 Layout.fillWidth: true
                 Layout.topMargin: Kirigami.Units.smallSpacing
             }
 
             // Почасовой прогноз: 24 часа от текущего, двумя рядами по 12
             PC3.Label {
-                visible: root.weather !== null
+                visible: root.weather !== null && root.showHourly
                 text: "Ближайшие 24 часа"
                 opacity: 0.6
             }
 
             GridLayout {
-                visible: root.weather !== null
+                visible: root.weather !== null && root.showHourly
                 Layout.fillWidth: true
                 columns: 12
                 columnSpacing: 0
@@ -330,19 +348,19 @@ PlasmoidItem {
             }
 
             Kirigami.Separator {
-                visible: root.weather !== null
+                visible: root.weather !== null && root.showHourly && root.showDaily
                 Layout.fillWidth: true
             }
 
             // Прогноз на 7 дней
             PC3.Label {
-                visible: root.weather !== null
+                visible: root.weather !== null && root.showDaily
                 text: "7 дней"
                 opacity: 0.6
             }
 
             GridLayout {
-                visible: root.weather !== null
+                visible: root.weather !== null && root.showDaily
                 Layout.fillWidth: true
                 columns: 6
                 columnSpacing: Kirigami.Units.largeSpacing
@@ -416,6 +434,8 @@ PlasmoidItem {
                     }
                 }
             }
+
+            Item { Layout.fillHeight: true }
         }
     }
 }
