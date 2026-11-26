@@ -6,13 +6,23 @@ Tags: `kde-plasma` · `plasmoid` · `wayland` · `weather` · `open-meteo` · `q
 
 Русская версия: [ПРОЧТИ.md](ПРОЧТИ.md)
 
+In the panel:
+
+![The widget in the panel: icon and temperature](screenshots/panel.png)
+
+The popup:
+
 ![Popup with current conditions, the 24-hour and the 7-day forecast](screenshots/en-full.png)
 
 With both forecasts switched off in the settings the popup shrinks to current conditions:
 
 ![Popup with current conditions only](screenshots/en-compact.png)
 
-The images are renders of the popup made without a desktop session (`plasmawindowed` on the offscreen platform), not screenshots of a real panel: fonts, icons and colours follow your Plasma theme.
+The settings:
+
+![Settings page](screenshots/settings-en.png)
+
+The images are renders made without a desktop session (on the Qt offscreen platform), not screenshots of a real desktop: fonts, icons and colours follow your Plasma theme, and the settings page is shown without the frame of its dialog.
 
 ## Why
 
@@ -36,8 +46,8 @@ The interface follows the system language: English by default, Russian when Plas
 
 ## Settings
 
-- **Location.** By default it is detected by IP address: the widget asks ipwho.is (geojs.io as a fallback), then the Open-Meteo geocoder for the place name in the system language. Detection is repeated every three hours and when the refresh button is pressed. With a VPN the result is the location of the VPN exit.
-- **Manual location.** With the "Detect location by IP address" checkbox off, the place name, latitude and longitude (decimal degrees) from the settings are used. Their defaults are a neutral example (Greenwich). There is no search by city name.
+- **Location.** The place name, latitude and longitude (decimal degrees). A place can be found by name: the search asks the Open-Meteo geocoder and fills in the name and coordinates of the chosen result; they can also be typed by hand. The defaults are a neutral example (Greenwich), so set your own place after adding the widget.
+- **Detection by IP address.** Off by default. With the "Detect location by IP address" checkbox on, the widget asks ipwho.is (geojs.io as a fallback), then the Open-Meteo geocoder for the place name in the system language. Detection is repeated every three hours and when the refresh button is pressed. With a VPN the result is the location of the VPN exit.
 - **Update interval** in minutes, 15 by default.
 - **Popup.** Two checkboxes, both on by default, show or hide the 24-hour and the 7-day forecast. With both off the popup shrinks to current conditions, and the details move below the temperature.
 - **Units**, chosen separately: temperature (°C, °F), wind speed (m/s, km/h, mph, knots), pressure (mmHg, hPa, inHg), precipitation (mm, inches). Changing them does not trigger a new request: the last response is converted on the spot.
@@ -47,21 +57,35 @@ If the coordinates are empty or the detection fails, the popup shows a message a
 
 ## Installation
 
+Requires KDE Plasma 6; tested on Plasma 6.8.
+
+### From a package
+
+Download `org.elph.weather-<version>.plasmoid` from the [releases page](../../releases/latest) and install it:
+
+```
+kpackagetool6 -t Plasma/Applet -i org.elph.weather-<version>.plasmoid
+```
+
+To update an installed widget use `-u` instead of `-i`. The same file can be installed without a terminal: "Add Widgets…" → "Get New Widgets…" → "Install Widget From Local File…".
+
+Then add the widget "Weather" via "Add Widgets…" and set your place in its settings. After an update restart the shell: `systemctl --user restart plasma-plasmashell.service`.
+
+To remove the widget: `kpackagetool6 -t Plasma/Applet -r org.elph.weather`.
+
+### From source
+
 ```
 ./install.sh
 ```
 
-The script installs or updates the package `org.elph.weather` in `~/.local/share/plasma/plasmoids/` with `kpackagetool6`. Then add the widget "Weather" via "Add Widgets…". After an update restart the shell: `systemctl --user restart plasma-plasmashell.service`.
-
-To remove it: `kpackagetool6 -t Plasma/Applet -r org.elph.weather`.
-
-Requires KDE Plasma 6; tested on Plasma 6.8. Rebuilding the translation needs gettext (`msgfmt`); without it the catalogue shipped in the package is installed.
+The script installs or updates the package in `~/.local/share/plasma/plasmoids/` straight from the repository. `./build-package.sh` builds `dist/org.elph.weather-<version>.plasmoid`, the file published in releases; it needs Python 3. Rebuilding the translation needs gettext (`msgfmt`); without it the catalogue shipped in the package is installed.
 
 ## Data and privacy
 
 Weather data by [Open-Meteo](https://open-meteo.com), licensed under CC BY 4.0. The free API is intended for non-commercial use.
 
-The widget talks only to the services named here. Open-Meteo receives the coordinates of the place. With detection by IP address on, [ipwho.is](https://ipwho.is) or, as a fallback, [geojs.io](https://www.geojs.io) sees your IP address, and the Open-Meteo geocoder receives the name of the detected place. With detection off, only the forecast request is made.
+The widget talks only to the services named here. Open-Meteo receives the coordinates of the place. Detection by IP address is off by default; when it is turned on, [ipwho.is](https://ipwho.is) or, as a fallback, [geojs.io](https://www.geojs.io) sees your IP address, and the Open-Meteo geocoder receives the name of the detected place. Otherwise only the forecast request is made. The place search in the settings sends the typed name to the Open-Meteo geocoder.
 
 ## License
 
