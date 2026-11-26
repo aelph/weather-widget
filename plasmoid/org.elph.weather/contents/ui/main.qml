@@ -9,9 +9,17 @@ import "weather.js" as Weather
 PlasmoidItem {
     id: root
 
-    readonly property string cityName: Plasmoid.configuration.cityName
-    readonly property string latitude: Plasmoid.configuration.latitude.replace(",", ".")
-    readonly property string longitude: Plasmoid.configuration.longitude.replace(",", ".")
+    // Место: определённое по IP-адресу либо заданное в настройках вручную
+    readonly property bool autoLocation: Plasmoid.configuration.autoLocation
+    property var detected: null
+    property double locatedAt: 0
+    readonly property string latitude: autoLocation ? (detected ? String(detected.lat) : "") : Plasmoid.configuration.latitude.replace(",", ".")
+    readonly property string longitude: autoLocation ? (detected ? String(detected.lon) : "") : Plasmoid.configuration.longitude.replace(",", ".")
+    readonly property string cityName: {
+        if (autoLocation) return detected ? (detected.name !== "" ? detected.name : latitude + ", " + longitude) : i18n("Weather")
+        if (Plasmoid.configuration.cityName !== "") return Plasmoid.configuration.cityName
+        return latitude !== "" && longitude !== "" ? latitude + ", " + longitude : i18n("Weather")
+    }
     readonly property int updateMs: Math.max(5, Plasmoid.configuration.updateInterval) * 60000
 
     // Выбранные единицы измерения; при смене последний ответ сервиса разбирается заново, без нового запроса
@@ -56,6 +64,9 @@ PlasmoidItem {
     property double fetchedAt: 0
     property double attemptedAt: 0
     property var request: null
+    property var requestDone: null
+    // Ошибка, которую пользователь исправляет в настройках: под сообщением показывается кнопка настройки
+    property bool needsConfig: false
 
     // Данные старше двух часов считаются устаревшими: значение на панели бледнеет
     property bool stale: false
@@ -68,38 +79,109 @@ PlasmoidItem {
         return s
     }
 
-    function refresh() {
-        if (loading) return
-        if (isNaN(parseFloat(latitude)) || isNaN(parseFloat(longitude))) {
-            errorText = i18n("Location coordinates are not set")
-            return
-        }
-        loading = true
-        attemptedAt = Date.now()
+    // Запрос GET с ответом в onDone(код, текст). Запрос без ответа обрывается сторожевым таймером, тогда код равен -1.
+    function get(address, onDone) {
         const xhr = new XMLHttpRequest()
         request = xhr
+        requestDone = onDone
         xhr.onreadystatechange = function() {
             if (xhr.readyState !== XMLHttpRequest.DONE || request !== xhr) return
             watchdog.stop()
             request = null
+            requestDone = null
+            onDone(xhr.status, xhr.responseText)
+        }
+        xhr.open("GET", address)
+        xhr.send()
+        watchdog.restart()
+    }
+
+    // relocate – определить место заново, даже если оно определено недавно (кнопка «Обновить»)
+    function refresh(relocate) {
+        if (loading) return
+        attemptedAt = Date.now()
+        if (autoLocation) {
+            // Место по IP-адресу переопределяется раз в три часа: адрес и с ним место могут смениться
+            if (detected === null || relocate === true || Date.now() - locatedAt > 10800000) {
+                loading = true
+                locate(0)
+                return
+            }
+        } else if (isNaN(parseFloat(latitude)) || isNaN(parseFloat(longitude))) {
+            errorText = i18n("Location coordinates are not set. Open the widget settings.")
+            needsConfig = true
+            return
+        }
+        loading = true
+        fetchWeather()
+    }
+
+    // Определение места: сервисы опрашиваются по очереди, пока один не ответит координатами
+    function locate(index) {
+        if (index >= Weather.LOCATORS.length) {
+            if (detected !== null) {
+                // Сервисы не ответили, но место уже известно: погода запрашивается для него
+                fetchWeather()
+                return
+            }
             loading = false
-            if (xhr.status !== 200) {
-                errorText = xhr.status === 0 ? i18n("No connection to Open-Meteo") : i18n("Open-Meteo returned status %1", String(xhr.status))
+            errorText = i18n("Could not determine the location by IP address. Turn the detection off and set the coordinates in the widget settings.")
+            needsConfig = true
+            return
+        }
+        get(Weather.LOCATORS[index], function(status, text) {
+            let found = null
+            if (status === 200) {
+                try {
+                    found = Weather.parseLocation(text)
+                } catch (e) {
+                    found = null
+                }
+            }
+            if (found === null) locate(index + 1)
+            else if (found.name === "") located(found)
+            else localize(found)
+        })
+    }
+
+    // Сервисы отдают название места по-английски; название на языке системы берётся у геокодера Open-Meteo
+    function localize(found) {
+        get(Weather.geocoderUrl(found.name), function(status, text) {
+            if (status === 200) {
+                try {
+                    const name = Weather.localizedName(text, found.lat, found.lon)
+                    if (name !== "") found.name = name
+                } catch (e) {
+                }
+            }
+            located(found)
+        })
+    }
+
+    function located(found) {
+        locatedAt = Date.now()
+        detected = found
+        fetchWeather()
+    }
+
+    function fetchWeather() {
+        get(Weather.url(latitude, longitude), function(status, text) {
+            loading = false
+            if (status !== 200) {
+                errorText = status === -1 ? i18n("Open-Meteo did not respond within 30 seconds") : status === 0 ? i18n("No connection to Open-Meteo") : i18n("Open-Meteo returned status %1", String(status))
                 return
             }
             try {
-                weather = Weather.parse(xhr.responseText, root.units, root.trends)
-                rawText = xhr.responseText
+                weather = Weather.parse(text, root.units, root.trends)
+                rawText = text
                 fetchedAt = Date.now()
                 stale = false
                 errorText = ""
+                needsConfig = false
             } catch (e) {
                 errorText = i18n("Could not parse the Open-Meteo response: %1", e.message)
             }
-        }
-        xhr.open("GET", Weather.url(latitude, longitude))
-        xhr.send()
-        watchdog.restart()
+        })
     }
 
     // Запрос без ответа обрывается, иначе признак загрузки навсегда заблокирует обновление
@@ -108,10 +190,11 @@ PlasmoidItem {
         interval: 30000
         onTriggered: {
             const xhr = root.request
+            const done = root.requestDone
             root.request = null
-            root.loading = false
-            root.errorText = i18n("Open-Meteo did not respond within 30 seconds")
+            root.requestDone = null
             if (xhr) xhr.abort()
+            if (done) done(-1, "")
         }
     }
 
@@ -129,8 +212,14 @@ PlasmoidItem {
         }
     }
 
-    onLatitudeChanged: Qt.callLater(refresh)
-    onLongitudeChanged: Qt.callLater(refresh)
+    // Смена места в настройках. Когда место определено по IP-адресу, погоду запрашивает само определение.
+    onLatitudeChanged: if (!autoLocation) Qt.callLater(refresh)
+    onLongitudeChanged: if (!autoLocation) Qt.callLater(refresh)
+    onAutoLocationChanged: {
+        errorText = ""
+        needsConfig = false
+        Qt.callLater(refresh)
+    }
 
     activationTogglesExpanded: true
 
@@ -199,7 +288,7 @@ PlasmoidItem {
                 PC3.ToolButton {
                     icon.name: "view-refresh"
                     enabled: !root.loading
-                    onClicked: root.refresh()
+                    onClicked: root.refresh(true)
                     PC3.ToolTip { text: i18n("Refresh") }
                 }
             }
@@ -211,6 +300,13 @@ PlasmoidItem {
                 color: Kirigami.Theme.negativeTextColor
                 wrapMode: Text.WordWrap
                 Layout.fillWidth: true
+            }
+
+            PC3.Button {
+                visible: root.needsConfig && root.errorText !== ""
+                icon.name: "configure"
+                text: i18n("Configure…")
+                onClicked: Plasmoid.internalAction("configure").trigger()
             }
 
             PC3.Label {

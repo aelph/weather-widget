@@ -99,6 +99,39 @@ function dayLabel(iso, index) {
     return i18nc("weekday and day of month", "%1, %2", WEEKDAYS[d.getDay()], String(d.getDate()))
 }
 
+// Сервисы определения места по IP-адресу, в порядке обращения; второй – запасной
+const LOCATORS = ["https://ipwho.is/", "https://get.geojs.io/v1/ip/geo.json"]
+
+// Разбирает ответ сервиса определения места. Оба сервиса отдают поля latitude, longitude и city. Возвращает null, если координат нет.
+function parseLocation(text) {
+    const j = JSON.parse(text)
+    if (j.success === false) return null
+    const lat = parseFloat(j.latitude), lon = parseFloat(j.longitude)
+    if (isNaN(lat) || isNaN(lon)) return null
+    return { name: j.city || "", lat: lat, lon: lon }
+}
+
+// Запрос к геокодеру Open-Meteo: он нужен только затем, чтобы получить название места на языке системы
+function geocoderUrl(name) {
+    return "https://geocoding-api.open-meteo.com/v1/search?count=10&format=json&language=" + Qt.locale().name.substring(0, 2) + "&name=" + encodeURIComponent(name)
+}
+
+// Из ответа геокодера берётся название ближайшего к точке места, если оно не дальше 50 км; иначе пустая строка
+function localizedName(text, lat, lon) {
+    const results = JSON.parse(text).results || []
+    let best = "", bestKm = 50
+    for (const r of results) {
+        const dLat = (r.latitude - lat) * 111.2
+        const dLon = (r.longitude - lon) * 111.2 * Math.cos(lat * Math.PI / 180)
+        const km = Math.sqrt(dLat * dLat + dLon * dLon)
+        if (km < bestKm) {
+            bestKm = km
+            best = r.name
+        }
+    }
+    return best
+}
+
 function url(latitude, longitude) {
     return "https://api.open-meteo.com/v1/forecast?latitude=" + latitude + "&longitude=" + longitude
         + "&timezone=auto&wind_speed_unit=ms&forecast_days=7&forecast_hours=24"

@@ -5,6 +5,7 @@ import org.kde.kirigami as Kirigami
 import org.kde.kcmutils as KCM
 
 KCM.SimpleKCM {
+    property alias cfg_autoLocation: autoCheck.checked
     property alias cfg_cityName: cityField.text
     property alias cfg_latitude: latField.text
     property alias cfg_longitude: lonField.text
@@ -23,6 +24,7 @@ KCM.SimpleKCM {
     property alias cfg_trendPressure: trendPressureSpin.value
 
     // Plasma передаёт странице и значения по умолчанию; без этих свойств журнал засоряется предупреждениями
+    property bool cfg_autoLocationDefault
     property string cfg_cityNameDefault
     property string cfg_latitudeDefault
     property string cfg_longitudeDefault
@@ -67,13 +69,28 @@ KCM.SimpleKCM {
     }
 
     Kirigami.FormLayout {
+        QQC2.CheckBox {
+            id: autoCheck
+            Kirigami.FormData.label: i18n("Location:")
+            text: i18n("Detect location by IP address")
+        }
+
+        QQC2.Label {
+            text: i18n("The location is requested from ipwho.is (geojs.io as a fallback), which sees your IP address. With a VPN this is the location of the VPN exit. When the detection is off, the name and coordinates below are used.")
+            wrapMode: Text.WordWrap
+            opacity: 0.7
+            Layout.fillWidth: true
+        }
+
         QQC2.TextField {
             id: cityField
             Kirigami.FormData.label: i18n("Name:")
+            enabled: !autoCheck.checked
         }
 
         QQC2.TextField {
             id: latField
+            enabled: !autoCheck.checked
             Kirigami.FormData.label: i18n("Latitude:")
             placeholderText: "51.48"
             validator: RegularExpressionValidator { regularExpression: /-?\d{1,2}([.,]\d+)?/ }
@@ -81,6 +98,7 @@ KCM.SimpleKCM {
 
         QQC2.TextField {
             id: lonField
+            enabled: !autoCheck.checked
             Kirigami.FormData.label: i18n("Longitude:")
             placeholderText: "0.00"
             validator: RegularExpressionValidator { regularExpression: /-?\d{1,3}([.,]\d+)?/ }

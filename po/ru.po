@@ -244,8 +244,8 @@ msgstr "данные на %1"
 msgid "Loading…"
 msgstr "Загрузка…"
 
-msgid "Location coordinates are not set"
-msgstr "Не заданы координаты места"
+msgid "Location coordinates are not set. Open the widget settings."
+msgstr "Не заданы координаты места. Откройте настройки виджета."
 
 msgid "No connection to Open-Meteo"
 msgstr "Нет связи с Open-Meteo"
@@ -421,3 +421,21 @@ msgstr "день убывает на %1 мин"
 msgctxt "change of day length by tomorrow"
 msgid "day length steady"
 msgstr "долгота дня без изменений"
+
+msgid "Could not determine the location by IP address. Turn the detection off and set the coordinates in the widget settings."
+msgstr "Не удалось определить местоположение по IP-адресу. Отключите определение и задайте координаты в настройках виджета."
+
+msgid "Weather"
+msgstr "Погода"
+
+msgid "Configure…"
+msgstr "Настроить…"
+
+msgid "Location:"
+msgstr "Место:"
+
+msgid "Detect location by IP address"
+msgstr "Определение местоположения по IP-адресу"
+
+msgid "The location is requested from ipwho.is (geojs.io as a fallback), which sees your IP address. With a VPN this is the location of the VPN exit. When the detection is off, the name and coordinates below are used."
+msgstr "Место запрашивается у ipwho.is (запасной сервис – geojs.io), который видит ваш IP-адрес. При работе через VPN это будет место выхода VPN. Если определение отключено, действуют название и координаты ниже."

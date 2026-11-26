@@ -1,6 +1,6 @@
 # Weather Widget
 
-A KDE Plasma 6 panel widget showing the weather from [Open-Meteo](https://open-meteo.com): current conditions, an hourly forecast for the next 24 hours and a 7-day forecast. No API key, no helper services – a single plasmoid in plain QML.
+A KDE Plasma 6 panel widget showing the weather from [Open-Meteo](https://open-meteo.com): current conditions, an hourly forecast for the next 24 hours and a 7-day forecast. No API key, no helper services on your machine – a single plasmoid in plain QML.
 
 Tags: `kde-plasma` · `plasmoid` · `wayland` · `weather` · `open-meteo` · `qml`
 
@@ -36,7 +36,7 @@ The interface follows the system language: English by default, Russian when Plas
 
 ## Settings
 
-Place name, latitude, longitude (decimal degrees) and the update interval in minutes (15 by default). Units are chosen separately for temperature (°C, °F), wind speed (m/s, km/h, mph, knots), pressure (mmHg, hPa, inHg) and precipitation (mm, inches); changing them does not trigger a new request, the last response is converted on the spot. Two checkboxes, both on by default, show or hide the 24-hour and the 7-day forecast; with both off the popup shrinks to current conditions only, and the details move below the temperature. The "Trends" section sets how many hours ahead the forecast is compared with the current value (1 by default, up to 12) and the thresholds: temperature 0.5 °C, humidity 3 %, wind 0.5 m/s, gusts 1 m/s, pressure 0.5 hPa by default. Thresholds are always in these units, whatever display units are chosen. There is no search by city name: coordinates are entered by hand. The default coordinates are only an example: set your own after adding the widget.
+Location and the update interval in minutes (15 by default). By default the location is detected by IP address: the widget asks ipwho.is (geojs.io as a fallback), which sees your IP address, and then the Open-Meteo geocoder for the place name in the system language. The location is detected again every three hours and when the refresh button is pressed; with a VPN it is the location of the VPN exit. With the "Detect location by IP address" checkbox off, the place name, latitude and longitude (decimal degrees) from the settings are used; their defaults are a neutral example (Greenwich). If the coordinates are empty or the detection fails, the popup shows a message and a button that opens the settings. Units are chosen separately for temperature (°C, °F), wind speed (m/s, km/h, mph, knots), pressure (mmHg, hPa, inHg) and precipitation (mm, inches); changing them does not trigger a new request, the last response is converted on the spot. Two checkboxes, both on by default, show or hide the 24-hour and the 7-day forecast; with both off the popup shrinks to current conditions only, and the details move below the temperature. The "Trends" section sets how many hours ahead the forecast is compared with the current value (1 by default, up to 12) and the thresholds: temperature 0.5 °C, humidity 3 %, wind 0.5 m/s, gusts 1 m/s, pressure 0.5 hPa by default. Thresholds are always in these units, whatever display units are chosen. There is no search by city name: with the detection off, coordinates are entered by hand.
 
 ## Installation
 
