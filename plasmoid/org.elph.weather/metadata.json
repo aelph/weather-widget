@@ -1,0 +1,18 @@
+{
+    "KPackageStructure": "Plasma/Applet",
+    "KPlugin": {
+        "Id": "org.elph.weather",
+        "Name": "Погода",
+        "Description": "Текущая погода, почасовой прогноз на сутки и прогноз на 7 дней по данным Open-Meteo",
+        "Icon": "weather-few-clouds",
+        "Category": "Environment and Weather",
+        "License": "MIT",
+        "Version": "1.0",
+        "Authors": [
+            {
+                "Name": "elph"
+            }
+        ]
+    },
+    "X-Plasma-API-Minimum-Version": "6.0"
+}
